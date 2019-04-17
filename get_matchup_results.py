@@ -6,7 +6,7 @@
 import pandas as pd
 import string
 
-df_matchups = pd.read_csv('tourney_possible_matchups.csv')
+df_matchups = pd.read_csv('tourney_possible_matchups_wmirrors.csv')
 df_results = pd.read_csv('NCAATourneyCompactResults.csv')
 
 def get_winner(df):
@@ -23,9 +23,6 @@ def get_winner(df):
         return 'T1'
     else:
         return 'T2'
-    
-
-print(df_matchups)
 
 # make seed an integer
 df_matchups['T1 Seed'] = df_matchups['T1 Seed'].map(lambda x: x.strip(string.ascii_letters))
@@ -35,4 +32,4 @@ df_matchups['T2 Seed'] = df_matchups['T2 Seed'].map(lambda x: x.strip(string.asc
 df_matchups['Winner'] = df_matchups[['Year','T1 TeamID','T2 TeamID']].apply(get_winner, axis=1)
 
 # matchups with N/A result never happened, so don't include them
-df_matchups.loc[df_matchups['Winner'] != 'N/A'].to_csv('tourney_matchup_results.csv', index=False)
+df_matchups.loc[df_matchups['Winner'] != 'N/A'].to_csv('tourney_matchup_results_wmirrors.csv', index=False)

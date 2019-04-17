@@ -7,6 +7,10 @@
 #       Most of the rows will ultimately not be useful, since only 63 out of the 
 #       (64 choose 2) possible games occur for a given year's tournament.
 
+#   UPDATE 4/17/19 : Modified this script to include mirror matchups.
+#   Each matchup now has TWO rows in the dataset. One with team a as T1 and team b as T2; and one for the mirror.
+#   This is to balance out the statistical significance of our feature set.
+
 import pandas as pd
 from itertools import combinations
 
@@ -68,26 +72,31 @@ for y in sorted(years_to_retrieve):
                    'T1 Seed': df_y[df_y.columns[1]].loc[df_y[df_y.columns[2]] == t1].iloc[0],
                    'T2 Seed': df_y[df_y.columns[1]].loc[df_y[df_y.columns[2]] == t2].iloc[0]}
         
+        mirror = {'Year': y, 'T1 TeamID': t2, 'T2 TeamID': t1,
+                   'T1 Seed': df_y[df_y.columns[1]].loc[df_y[df_y.columns[2]] == t2].iloc[0],
+                   'T2 Seed': df_y[df_y.columns[1]].loc[df_y[df_y.columns[2]] == t1].iloc[0]}
+        
         # get team 1 stats
         df_in1_t1 = df_in1.loc[(df_in1[df_in1.columns[0]] == y) & (df_in1[df_in1.columns[1]] == t1)]
-        matchup['T1 SoS'] = df_in2[df_in2.columns[2]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t1)].iloc[0]
-        matchup['T1 AdjWin'] = df_in2[df_in2.columns[3]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t1)].iloc[0]
-        matchup['T1 OE'] = get_efficiency(df_in1_t1[eff_cols])
-        matchup['T1 AdjOE'] = get_adj_efficiency(matchup['T1 OE'], df_in1_t1[adj_eff_cols])
-        matchup['T1 DE'] = get_efficiency(df_in1_t1[opp_eff_cols])
-        matchup['T1 AdjDE'] = get_adj_efficiency(matchup['T1 DE'], df_in1_t1[opp_adj_eff_cols])
-        matchup['T1 WinDev'] = get_win_deviation(df_in1_t1[win_dev_cols])
+        matchup['T1 SoS'] = mirror['T2 SoS'] = df_in2[df_in2.columns[2]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t1)].iloc[0]
+        matchup['T1 AdjWin'] = mirror['T2 AdjWin'] = df_in2[df_in2.columns[3]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t1)].iloc[0]
+        matchup['T1 OE'] = mirror['T2 OE'] = get_efficiency(df_in1_t1[eff_cols])
+        matchup['T1 AdjOE'] = mirror['T2 AdjOE'] = get_adj_efficiency(matchup['T1 OE'], df_in1_t1[adj_eff_cols])
+        matchup['T1 DE'] = mirror['T2 DE'] = get_efficiency(df_in1_t1[opp_eff_cols])
+        matchup['T1 AdjDE'] = mirror['T2 AdjDE'] = get_adj_efficiency(matchup['T1 DE'], df_in1_t1[opp_adj_eff_cols])
+        matchup['T1 WinDev'] = mirror['T2 WinDev'] = get_win_deviation(df_in1_t1[win_dev_cols])
         
         # get team 2 stats
         df_in1_t2 = df_in1.loc[(df_in1[df_in1.columns[0]] == y) & (df_in1[df_in1.columns[1]] == t2)]
-        matchup['T2 SoS'] = df_in2[df_in2.columns[2]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t2)].iloc[0]
-        matchup['T2 AdjWin'] = df_in2[df_in2.columns[3]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t2)].iloc[0]
-        matchup['T2 OE'] = get_efficiency(df_in1_t2[eff_cols])
-        matchup['T2 AdjOE'] = get_adj_efficiency(matchup['T1 OE'], df_in1_t2[adj_eff_cols])
-        matchup['T2 DE'] = get_efficiency(df_in1_t2[opp_eff_cols])
-        matchup['T2 AdjDE'] = get_adj_efficiency(matchup['T1 DE'], df_in1_t2[opp_adj_eff_cols])
-        matchup['T2 WinDev'] = get_win_deviation(df_in1_t2[win_dev_cols])
+        matchup['T2 SoS'] = mirror['T1 SoS'] = df_in2[df_in2.columns[2]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t2)].iloc[0]
+        matchup['T2 AdjWin'] = mirror['T1 AdjWin'] = df_in2[df_in2.columns[3]].loc[(df_in2[df_in2.columns[0]] == y) & (df_in2[df_in2.columns[1]] == t2)].iloc[0]
+        matchup['T2 OE'] = mirror['T1 OE'] = get_efficiency(df_in1_t2[eff_cols])
+        matchup['T2 AdjOE'] = mirror['T1 AdjOE'] = get_adj_efficiency(matchup['T1 OE'], df_in1_t2[adj_eff_cols])
+        matchup['T2 DE'] = mirror['T1 DE'] = get_efficiency(df_in1_t2[opp_eff_cols])
+        matchup['T2 AdjDE'] = mirror['T1 AdjDE'] = get_adj_efficiency(matchup['T1 DE'], df_in1_t2[opp_adj_eff_cols])
+        matchup['T2 WinDev'] = mirror['T1 WinDev'] = get_win_deviation(df_in1_t2[win_dev_cols])
         
         df = df.append(matchup, ignore_index=True)
+        df = df.append(mirror, ignore_index=True)
 
-df.to_csv('tourney_possible_matchups.csv', index=False)
+df.to_csv('tourney_possible_matchups_wmirrors.csv', index=False)
