@@ -45,17 +45,22 @@ def seed_score(x_test, y_test):
     return (results['c'].sum()/len(results.index))
 
 df = pd.read_csv('tourney_matchup_results_wmirrors.csv')
-cols_to_exclude = []
+
+cols_to_exclude = ['Year','T1 TeamID', 'T2 TeamID', 'T1 WinDev', 'T2 WinDev']
 results = pd.DataFrame(columns=['Test Year','NB Acc','LR Acc', 'XGB Acc','Seed Acc','NB Ll','LR Ll','XGB Ll'])
+
 x = df.iloc[:, 0:len(df.columns)-1]
 y = df.iloc[:, -1]
 
 nb = GaussianNB()
-lr = LogisticRegression(penalty='l1', tol=1e-5, C=100, solver='liblinear', max_iter=500)
-xgb = XGBClassifier(booster='dart')
+# lr = LogisticRegression(penalty='l1', tol=1e-5, C=100, solver='liblinear', max_iter=500, random_state=7, fit_intercept=True)
+lr = LogisticRegression(penalty='l2', tol=0.001, C=1000,solver='liblinear',random_state=0)
+xgb = XGBClassifier(n_jobs=8,random_state=7, max_depth=3, booster='gbtree', learning_rate=0.1, colsample_bytree=0.3, gamma=0.2, min_child_weight=1, subsample=0.7)
 
 for year in x['Year'].unique():
+    # if year >= 2016:
     print(f'Testing year {year}')
+
     x_train = x[x['Year'] != year].drop(cols_to_exclude, axis=1)
     y_train = y.iloc[x_train.index]
     x_test = x[x['Year'] == year].drop(cols_to_exclude, axis=1)
