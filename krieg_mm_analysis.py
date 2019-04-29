@@ -37,12 +37,16 @@ from xgboost import XGBClassifier
 from sklearn.metrics import log_loss
 import pandas as pd
 import warnings
-
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
+
+def seed_score(x_test, y_test):
+    results = pd.DataFrame({'p': x_test.apply(lambda s: 'T1' if s['T1 Seed'] <= s['T2 Seed'] else 'T2', axis=1), 'y': y_test})
+    results['c'] = results.apply(lambda s: 0 if s['p'] != s['y'] else 1, axis=1)
+    return (results['c'].sum()/len(results.index))
 
 df = pd.read_csv('tourney_matchup_results_wmirrors.csv')
 cols_to_exclude = []
-results = pd.DataFrame(columns=['Test Year','NB Acc','LR Acc', 'XGB Acc','NB Ll','LR Ll','XGB Ll'])
+results = pd.DataFrame(columns=['Test Year','NB Acc','LR Acc', 'XGB Acc','Seed Acc','NB Ll','LR Ll','XGB Ll'])
 x = df.iloc[:, 0:len(df.columns)-1]
 y = df.iloc[:, -1]
 
@@ -65,9 +69,11 @@ for year in x['Year'].unique():
                 nb.score(x_test, y_test), 
                 lr.score(x_test, y_test),
                 xgb.score(x_test, y_test),
+                seed_score(x_test, y_test),
                 log_loss(y_test, nb.predict_proba(x_test)), 
                 log_loss(y_test, lr.predict_proba(x_test)), 
                 log_loss(y_test, xgb.predict_proba(x_test)) ]
+    print(results['Seed Acc'])
 
 results.loc[len(results.index)] = ['Avg'] + [results[col].mean() for col in results.columns if col != 'Test Year']
 results.loc[len(results.index)] = ['STD'] + [results[col].std() for col in results.columns if col != 'Test Year']
