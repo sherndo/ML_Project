@@ -58,7 +58,6 @@ lr = LogisticRegression(penalty='l2', tol=0.001, C=1000,solver='liblinear',rando
 xgb = XGBClassifier(n_jobs=8,random_state=7, max_depth=3, booster='gbtree', learning_rate=0.1, colsample_bytree=0.3, gamma=0.2, min_child_weight=1, subsample=0.7)
 
 for year in x['Year'].unique():
-    # if year >= 2016:
     print(f'Testing year {year}')
 
     x_train = x[x['Year'] != year].drop(cols_to_exclude, axis=1)

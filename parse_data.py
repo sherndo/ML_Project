@@ -6,7 +6,7 @@ def parse_data(season_file, teams_file, sos_file):
     # read csv into panda dataframe using headers and found delimiter
     season_data = pd.read_csv(season_file, delimiter=',')
     team_info = pd.read_csv(teams_file, delimiter=',', encoding="latin1")
-    sos_info = pd.read_csv(sos_file, delimiter='\t')
+    sos_info = pd.read_csv(sos_file, delimiter=',')
     
     team_data_cols = [
         "Year",
@@ -62,7 +62,7 @@ def parse_data(season_file, teams_file, sos_file):
         i += 2
         year = game.Season
 
-    team_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/season_results.csv", index=False)
+    team_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/season_results_2019.csv", index=False)
     sos_cols = [
         "Year",
         "TeamID",
@@ -71,6 +71,7 @@ def parse_data(season_file, teams_file, sos_file):
     ]
     sos_data = pd.DataFrame(columns=sos_cols)
     i = 0
+    bad = set()
     for index, item in sos_info.iterrows():
         tid = team_info.loc[team_info['TeamNameSpelling'] == item.SCHOOL.lower()].TeamID
         if tid.empty:
@@ -86,14 +87,14 @@ def parse_data(season_file, teams_file, sos_file):
         sos_data.loc[i] = row
         i += 1
 
-    sos_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/sos_results.csv", index=False)
+    sos_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/sos_results_2019.csv", index=False)
 
     return
 
 
 if __name__=="__main__":
-    season_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2018/RegularSeasonDetailedResults.csv"
-    team_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2018/TeamSpellings.csv"
-    sos_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2018/StrengthOfSchedule.csv"
+    season_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/RegularSeasonDetailedResults.csv"
+    team_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/TeamSpellings.csv"
+    sos_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/StrengthOfSchedule.csv"
 
     parse_data(season_file, team_file, sos_file)
