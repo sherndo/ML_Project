@@ -36,11 +36,11 @@ def get_win_deviation(df):
 
     
 # inf1 is team regular season stats by game
-inf1 = 'season_results.csv'
+inf1 = 'data/season_results.csv'
 # inf2 is team regular season summary (strength of schedule and adjusted win %)
-inf2 = 'sos_results.csv'
+inf2 = 'data/sos_results.csv'
 # inf3 is tournament seeding info
-inf3 = 'tourney_seeds.csv'
+inf3 = 'data/tourney_seeds.csv'
 
 df_in1 = pd.read_csv(inf1)
 df_in2 = pd.read_csv(inf2)
@@ -99,4 +99,4 @@ for y in sorted(years_to_retrieve):
         df = df.append(matchup, ignore_index=True)
         df = df.append(mirror, ignore_index=True)
 
-df.to_csv('tourney_possible_matchups_wmirrors.csv', index=False)
+df.to_csv('data/tourney_possible_matchups_wmirrors.csv', index=False)

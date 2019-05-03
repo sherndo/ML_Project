@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 sns.set(style="darkgrid", font_scale=1.8, rc={"lines.linewidth": 4, "font.family":"Times New Roman"})
 
-df = pd.read_csv('krieg_mm_results.csv')
+df = pd.read_csv('data/krieg_mm_results.csv')
 df_new = pd.DataFrame(columns=['Test Year','Model','Accuracy','Log Loss'])
 
 models = ['NB','LR','XGB','Seed']
@@ -24,10 +24,10 @@ for y, m in product(years, models):
         
     
 sns.relplot(data=df_new, kind='line', x='Test Year',y='Accuracy', hue='Model', style='Model', height=10, aspect=2)
-plt.savefig("accall.png")
+plt.savefig("figures/accall.png")
 sns.catplot(data=df_new, x='Model', y='Accuracy', kind='violin', ci='sd', height=8, aspect=1.5)
-plt.savefig("accavg.png")
+plt.savefig("figures/accavg.png")
 sns.relplot(data=df_new[df_new['Model'] != 'Seed'], kind='line', x='Test Year',y='Log Loss',hue='Model', style='Model', height=10, aspect=2)
-plt.savefig("loglossall.png")
+plt.savefig("figures/loglossall.png")
 sns.catplot(data=df_new[df_new['Model'] != 'Seed'], x='Model', y='Log Loss', kind='violin', ci='sd', height=8, aspect=1.5)
-plt.savefig("loglossavg.png")
+plt.savefig("figures/loglossavg.png")

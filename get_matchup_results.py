@@ -6,8 +6,8 @@
 import pandas as pd
 import string
 
-df_matchups = pd.read_csv('tourney_possible_matchups_wmirrors.csv')
-df_results = pd.read_csv('NCAATourneyCompactResults.csv')
+df_matchups = pd.read_csv('data/tourney_possible_matchups_wmirrors.csv')
+df_results = pd.read_csv('data/NCAATourneyCompactResults.csv')
 
 def get_winner(df):
     y = df.iloc[0]
@@ -32,4 +32,4 @@ df_matchups['T2 Seed'] = df_matchups['T2 Seed'].map(lambda x: x.strip(string.asc
 df_matchups['Winner'] = df_matchups[['Year','T1 TeamID','T2 TeamID']].apply(get_winner, axis=1)
 
 # matchups with N/A result never happened, so don't include them
-df_matchups.loc[df_matchups['Winner'] != 'N/A'].to_csv('tourney_matchup_results_wmirrors.csv', index=False)
+df_matchups.loc[df_matchups['Winner'] != 'N/A'].to_csv('data/tourney_matchup_results_wmirrors.csv', index=False)

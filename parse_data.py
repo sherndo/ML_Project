@@ -62,7 +62,7 @@ def parse_data(season_file, teams_file, sos_file):
         i += 2
         year = game.Season
 
-    team_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/season_results_2019.csv", index=False)
+    team_data.to_csv("data/season_results.csv", index=False)
     sos_cols = [
         "Year",
         "TeamID",
@@ -87,14 +87,14 @@ def parse_data(season_file, teams_file, sos_file):
         sos_data.loc[i] = row
         i += 1
 
-    sos_data.to_csv("/home/sherndo/Documents/Classes/MachineLearning/ML_Project/sos_results_2019.csv", index=False)
+    sos_data.to_csv("data/sos_results.csv", index=False)
 
     return
 
 
 if __name__=="__main__":
-    season_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/RegularSeasonDetailedResults.csv"
-    team_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/TeamSpellings.csv"
-    sos_file = "/home/sherndo/Documents/Classes/MachineLearning/ML_Project/mens-machine-learning-competition-2019/StrengthOfSchedule.csv"
+    season_file = "data/RegularSeasonDetailedResults.csv"
+    team_file = "data/TeamSpellings.csv"
+    sos_file = "data/StrengthOfSchedule.csv"
 
     parse_data(season_file, team_file, sos_file)

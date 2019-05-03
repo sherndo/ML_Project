@@ -44,7 +44,7 @@ def seed_score(x_test, y_test):
     results['c'] = results.apply(lambda s: 0 if s['p'] != s['y'] else 1, axis=1)
     return (results['c'].sum()/len(results.index))
 
-df = pd.read_csv('tourney_matchup_results_wmirrors.csv')
+df = pd.read_csv('data/tourney_matchup_results_wmirrors.csv')
 
 cols_to_exclude = ['Year','T1 TeamID', 'T2 TeamID', 'T1 WinDev', 'T2 WinDev']
 results = pd.DataFrame(columns=['Test Year','NB Acc','LR Acc', 'XGB Acc','Seed Acc','NB Ll','LR Ll','XGB Ll'])
@@ -83,4 +83,4 @@ results.loc[len(results.index)] = ['Avg'] + [results[col].mean() for col in resu
 results.loc[len(results.index)] = ['STD'] + [results[col].std() for col in results.columns if col != 'Test Year']
 print(results[['Test Year'] + [x for x in results.columns if x.endswith('Ll')]])
 print(results[['Test Year'] + [x for x in results.columns if x.endswith('Acc')]])
-results.to_csv('krieg_mm_results.csv', index=False)
+results.to_csv('data/krieg_mm_results.csv', index=False)
