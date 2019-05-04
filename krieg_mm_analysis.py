@@ -54,8 +54,8 @@ y = df.iloc[:, -1]
 
 nb = GaussianNB()
 # lr = LogisticRegression(penalty='l1', tol=1e-5, C=100, solver='liblinear', max_iter=500, random_state=7, fit_intercept=True)
-lr = LogisticRegression(penalty='l2', tol=0.001, C=1000,solver='liblinear',random_state=0)
-xgb = XGBClassifier(n_jobs=8,random_state=7, max_depth=3, booster='gbtree', learning_rate=0.1, colsample_bytree=0.3, gamma=0.2, min_child_weight=1, subsample=0.7)
+lr = LogisticRegression(penalty='l2', max_iter=100, tol=0.001, C=1000,solver='liblinear',random_state=0)
+xgb = XGBClassifier(random_state=7, max_depth=3, booster='gbtree', learning_rate=0.1, colsample_bytree=0.3, gamma=0.2, min_child_weight=1, subsample=0.7)
 
 for year in x['Year'].unique():
     print(f'Testing year {year}')
